@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Processar Imagem</title>
+</head>
+<body>
+
+  <h1>Processamento da Imagem</h1>
+
+  <center>
+    <div id="imageContainer"></div>
+  </center>
+
+  <script>
+    // Obtém a imagem da sessionStorage
+    var dataURL = sessionStorage.getItem('capturedImage');
+
+    if (dataURL) {
+      // Exibe a imagem na página
+      var imageContainer = document.getElementById('imageContainer');
+      var imagemCapturada = new Image();
+      imagemCapturada.src = dataURL;
+      imagemCapturada.style.width = '50%'; // Ajusta a largura conforme necessário
+      imageContainer.appendChild(imagemCapturada);
+    } else {
+      // Se não houver imagem, exibe uma mensagem ou lida com o caso vazio
+      console.log('Nenhuma imagem para processar.');
+    }
+  </script>
+
+</body>
+</html>
