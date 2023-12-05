@@ -1,21 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
   <title>Câmera Web</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #cameraContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    #captureContainer {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #capture {
+      transform: rotate(270deg); /* Gira o botão em 90 graus */
+    }
+
+    #countdownContainer {
+      text-align: center;
+    }
+
+    #processingContainer {
+      text-align: center;
+    }
+
+    #imageContainer {
+      display: inline-block;
+      max-width: 100%;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+  </style>
 </head>
 <body>
 
-  <center>
-    <div id="cameraContainer" class="mt-5">
-      <video id="video" width="640" height="480" autoplay></video>
+  <div class="container">
+    <div class="row">
+      <div id="cameraContainer">
+        <video id="video" width="1500" height="550" autoplay></video>
+  
+        <div id="captureContainer">
+          <button class="btn btn-success" id="capture">Capturar Foto</button>
+        </div>
+      </div>
     </div>
-
-    <div id="captureContainer">
-      <button class="btn btn-success" id="capture">Capturar Foto</button>
-    </div>
-
+  </div>
+  
     <div id="countdownContainer" style="display:none;">
       <span id="countdown"></span>
     </div>
@@ -26,7 +73,7 @@
       <button class="btn btn-danger" id="excluir">Excluir Foto</button>
       <button class="btn btn-info" id="enviar" style="display:none;">Enviar para Processamento</button>
     </div>
-  </center>
+  
 
   <script>
     // Função para realizar a contagem regressiva
@@ -82,8 +129,8 @@
       // Desenha o frame do vídeo no canvas
       var canvas = document.createElement('canvas'); // Criar o canvas dinamicamente
       var context = canvas.getContext('2d');
-      canvas.width = 640; // Defina as dimensões conforme necessário
-      canvas.height = 480;
+      canvas.width = 1772; // Defina as dimensões conforme necessário
+      canvas.height = 1181;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       // Converte o conteúdo do canvas para uma imagem
@@ -95,7 +142,7 @@
         // Exibe a imagem capturada
         var imagemCapturada = new Image();
         imagemCapturada.src = dataURL;
-        imagemCapturada.style.width = '100%'; // Ajusta a largura conforme necessário
+        imagemCapturada.style.width = '1181px'; // Ajusta a largura conforme necessário
 
         // Adiciona a imagem ao contêiner
         imageContainer.appendChild(imagemCapturada);
