@@ -4,178 +4,37 @@
   <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css">
-  <title>Câmera Web</title>
-  <style>
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    #cameraContainer {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    #captureContainer {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    #capture {
-      transform: rotate(270deg); /* Gira o botão em 90 graus */
-    }
-
-    #countdownContainer {
-      text-align: center;
-    }
-
-    #processingContainer {
-      text-align: center;
-    }
-
-    #imageContainer {
-      display: inline-block;
-      max-width: 100%;
-      max-height: 100vh;
-      overflow: hidden;
-    }
-  </style>
+    <link rel="stylesheet" href="style.css">
+  <title>PhotoSmile</title>
 </head>
 <body>
-
-  <div class="container">
-    <div class="row">
-      <div id="cameraContainer">
-        <video id="video" width="1500" height="550" autoplay></video>
   
-        <div id="captureContainer">
-          <button class="btn btn-success" id="capture">Capturar Foto</button>
-        </div>
-      </div>
+  <div id="cameraContainer">
+    <video id="video" width="1181" height="1772" autoplay></video>
+  </div>
+
+  <div id="countdownContainer" class="girarContador" style="display:none;">
+    <span id="countdown"></span>
+  </div>
+
+  <div id="processingContainer" style="display:none;">
+    <div id="imageContainer"></div>
+    <div class="botoes-girados">
+      <button class="btn btn-success shadow-button animated" id="processar">Ficou Ótima</button>
+      <button class="btn btn-info" id="enviar" style="display:none;">Enviar para Processamento</button>
+      
     </div>
   </div>
-  
-    <div id="countdownContainer" style="display:none;">
-      <span id="countdown"></span>
-    </div>
 
-    <div id="processingContainer" style="display:none;">
-      <div id="imageContainer"></div>
-      <button class="btn btn-primary" id="processar">Processar Imagem</button>
-      <button class="btn btn-danger" id="excluir">Excluir Foto</button>
-      <button class="btn btn-info" id="enviar" style="display:none;">Enviar para Processamento</button>
-    </div>
-  
+  <button class="btn btn-light botoes-girados" id="tirarOutra" style="display:none;">Tirar Outra Foto</button>
 
-  <script>
-    // Função para realizar a contagem regressiva
-    function iniciarContagemRegressiva(segundos) {
-      return new Promise(resolve => {
-        var contador = segundos;
-        var countdownElement = document.getElementById('countdown');
-        var countdownContainer = document.getElementById('countdownContainer');
+  <div id="captureContainer">
+    <button class="btn btn-success" id="capture">Capturar Foto</button>
+  </div>
 
-        var intervalo = setInterval(function() {
-          countdownElement.textContent = contador;
-          contador--;
 
-          if (contador < 0) {
-            clearInterval(intervalo);
-            countdownContainer.style.display = 'none';
-            resolve();
-          }
-        }, 1000);
-
-        countdownContainer.style.display = 'block';
-      });
-    }
-
-    // Acessa a câmera
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function(stream) {
-        var video = document.getElementById('video');
-        video.srcObject = stream;
-      })
-      .catch(function(err) {
-        console.log('Erro ao acessar a câmera: ' + err);
-      });
-
-    // Captura a foto após a contagem regressiva
-    document.getElementById('capture').addEventListener('click', async function() {
-      var cameraContainer = document.getElementById('cameraContainer');
-      var captureContainer = document.getElementById('captureContainer');
-      var countdownContainer = document.getElementById('countdownContainer');
-      var processingContainer = document.getElementById('processingContainer');
-      var processarButton = document.getElementById('processar');
-      var excluirButton = document.getElementById('excluir');
-      var imageContainer = document.getElementById('imageContainer');
-      var enviarButton = document.getElementById('enviar');
-
-      // Esconde a câmera e o botão de captura
-      cameraContainer.style.display = 'none';
-      captureContainer.style.display = 'none';
-
-      // Inicia a contagem regressiva
-      await iniciarContagemRegressiva(3);
-
-      // Desenha o frame do vídeo no canvas
-      var canvas = document.createElement('canvas'); // Criar o canvas dinamicamente
-      var context = canvas.getContext('2d');
-      canvas.width = 1772; // Defina as dimensões conforme necessário
-      canvas.height = 1181;
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      // Converte o conteúdo do canvas para uma imagem
-      var dataURL = canvas.toDataURL('image/png');
-      console.log('Foto capturada:', dataURL);
-
-      // Exibe a imagem capturada apenas se o contêiner estiver vazio
-      if (!imageContainer.hasChildNodes()) {
-        // Exibe a imagem capturada
-        var imagemCapturada = new Image();
-        imagemCapturada.src = dataURL;
-        imagemCapturada.style.width = '1181px'; // Ajusta a largura conforme necessário
-
-        // Adiciona a imagem ao contêiner
-        imageContainer.appendChild(imagemCapturada);
-
-        // Exibe os botões de processamento
-        processarButton.style.display = 'block';
-        excluirButton.style.display = 'block';
-        enviarButton.style.display = 'none'; // Mostrar o botão de enviar
-
-        // Exibe a imagem capturada e os botões de processamento
-        processingContainer.style.display = 'block';
-
-        // Salva a imagem na sessionStorage
-        sessionStorage.setItem('capturedImage', dataURL);
-      }
-    });
-
-    // Enviar para a página de processamento ao clicar no botão "Enviar"
-    document.getElementById('enviar').addEventListener('click', function() {
-      window.location.href = 'processarImagem.html';
-    });
-
-    // Redireciona para a página de processamento ao clicar no botão "Processar"
-    document.getElementById('processar').addEventListener('click', function() {
-      window.location.href = 'processarImagem.html';
-    });
-
-    // Adiciona lógica para o botão "Excluir"
-    document.getElementById('excluir').addEventListener('click', function() {
-      // Reiniciar o estado da página
-      window.location.reload();
-    });
-  </script>
+  <!-- Carrega funções do JavaScript -->
+  <script src="script.js"></script>
 
 </body>
 </html>
